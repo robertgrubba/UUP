@@ -1,0 +1,11 @@
+<table>
+	<tr><th>Rodzaj strefy</th><th>Desygnator</th><th colspan=6>Rezerwacje</th></tr>
+	<tr><th></th><th></th><th>Godziny rezerwacji</th><th>Wysokość rezerwacji</th><th>Jednostka rezerwująca</th><th>Notatki</th><th>Status</th></tr>
+{% for x in uup %}
+<tr><td>{{ x['properties']['airspaceElementType'] }}</td><td colspan=6>{{ x['properties']['designator'] }}</td>
+		{% for reservation in x['properties']['airspaceReservations'] %}
+		<tr><td colspan=2></td><td>{{ reservation['startDate'][12:21] }} - {{ reservation['endDate'][12:21] }}</td><td>{{ reservation['lowerAltitude'] }} - {{ reservation['upperAltitude'] }}{{ reservation['altitudeUnit'] }}</td><td> {{ reservation['unit'] }}</td><td>{{ reservation['remarks'] }}</td><td>{{ reservation['reservationStatus'] }}</td></tr>
+		{% endfor %}
+</tr>
+{% endfor %}
+</table>
