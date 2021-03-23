@@ -7,7 +7,7 @@ from sqlalchemy.sql import func
 class Airspace(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     designator = db.Column(db.String(30),unique=True)
-    type = db.Column(db.String(10))
+    typ = db.Column(db.String(10))
     reservations = db.relationship('Reservation',backref='airspace',lazy=True)
 
     def __repr__(self):
@@ -16,7 +16,7 @@ class Airspace(db.Model):
 class Section(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     name = db.Column(db.String(30),unique=True)
-    reservations = db.relationship('Reservation',backref='airspace',lazy=True)
+    reservations = db.relationship('Reservation',backref='section',lazy=True)
 
     def __repr__(self):
         return '<Section %r>' % self.id
