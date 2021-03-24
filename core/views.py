@@ -7,7 +7,7 @@ core_bp = Blueprint('core_bp',__name__,template_folder='templates')
 
 @core_bp.route('/')
 def index():
-        return render_template('index.html')
+        return render_template('core/index.html')
 
 
 @core_bp.route('/echo/')
@@ -23,7 +23,8 @@ def html():
 @core_bp.route('/update/')
 def update():
     response = json.loads(requests.get('https://airspace.pansa.pl/map-configuration/uup').text)
-    
+    updated = 0    
+    processed = 0
     for r in response:
         airspace_type = None
         designator = None
@@ -81,6 +82,7 @@ def update():
                     section_q.reservations.append(new_reservation)
 
                     db.session.commit()
+                    updated = updated+1
                 else:
                     if reservation['reservationStatus']!='PLANNED':
                         status_q = Status.query.filter_by(name=reservation['reservationStatus']).first()
@@ -91,7 +93,9 @@ def update():
 
                         reservation_q.status=status_q
                         db.session.commit()
-    return jsonify(status=200)
+                        updated = updated+1
+        processed = processed+1
+    return jsonify(status=200,updated=updated,processed=processed)
 
 
 
