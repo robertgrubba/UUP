@@ -28,7 +28,7 @@ def update():
         airspace_type = None
         designator = None
         section = None
-        reservations = None
+        airspaceReservations = None
     
         if r['properties']:
             if 'airspaceElementType' in r['properties']:
@@ -37,11 +37,10 @@ def update():
                 designator = r['properties']['designator']
             if 'section' in r['properties']:
                 section = r['properties']['section']
-            if 'airspaceReservations' in r:
+            if 'airspaceReservations' in r['properties']:
                 airspaceReservations = r['properties']['airspaceReservations']
-
-            print(airspace_type)
-            print(designator)
+            
+            
             airspace_q = Airspace.query.filter_by(designator=designator,typ=airspace_type).first()
             if not airspace_q:
                 new_airspace = Airspace(designator=designator,typ=airspace_type)
@@ -49,18 +48,22 @@ def update():
                 airspace_q = new_airspace
 
             section_q = Section.query.filter_by(name=section).first()
-            if not section:
+            if not section_q:
                 new_section = Section(name=section)
                 db.session.add(new_section)
                 section_q = new_section
 
             for reservation in airspaceReservations:
-                reservation = Reservation.query.filter_by(start=reservation['startDate'],end=reservation['endDate'],lower_altitude=reservation['lowerAltitude'],upper_altitude=reservation['upperAltitude'],altitude_unit=reservation['altitudeUnit'],remarks=reservation['remarks']).first()
-                if not reservation:
-                    status_q = Status.query.filter_by(name=reservation['status']).first()
-
+                remarks = None
+                if 'remarks' in reservation:
+                    remarks = reservation['remarks']
+                start = datetime.datetime.strptime(reservation['startDate'],'%Y-%m-%dT%H:%M:%SZ')
+                end = datetime.datetime.strptime(reservation['endDate'],'%Y-%m-%dT%H:%M:%SZ')
+                reservation_q = Reservation.query.filter_by(start=start,end=end,lower_altitude=reservation['lowerAltitude'],upper_altitude=reservation['upperAltitude'],altitude_unit=reservation['altitudeUnit'],remarks=remarks).first()
+                if not reservation_q:
+                    status_q = Status.query.filter_by(name=reservation['reservationStatus']).first()
                     if not status_q:
-                        new_status = Status(name=reservation['status'])
+                        new_status = Status(name=reservation['reservationStatus'])
                         db.session.add(new_status)
                         status_q = new_status
 
@@ -70,12 +73,25 @@ def update():
                         db.session.add(new_unit)
                         unit_q = new_unit
 
-                    new_reservation = Reservation(start=reservation['startDate'],end=reservation['endDate'],lower_altitude=reservation['lowerAltitude'],upper_altitude=reservation['upperAltitude'],altitude_unit=reservation['altitudeUnit'],remarks=reservation['remarks'],status_id=status_q.id,airspace_id=airspace_q.id,section_id=section_q.id,unit_id=unit_q.id)
+                    new_reservation = Reservation(start=start,end=end,lower_altitude=reservation['lowerAltitude'],upper_altitude=reservation['upperAltitude'],altitude_unit=reservation['altitudeUnit'],remarks=remarks)
                     db.session.add(new_reservation)
+                    unit_q.reservations.append(new_reservation)
+                    status_q.reservations.append(new_reservation)
+                    airspace_q.reservations.append(new_reservation)
+                    section_q.reservations.append(new_reservation)
+
                     db.session.commit()
-                    
-            return jsonify(status=200)
-    return jsonify(status=500)
+                else:
+                    if reservation['reservationStatus']!='PLANNED':
+                        status_q = Status.query.filter_by(name=reservation['reservationStatus']).first()
+                        if not status_q:
+                            new_status = Status(name=reservation['reservationStatus'])
+                            db.session.add(new_status)
+                            status_q = new_status
+
+                        reservation_q.status=status_q
+                        db.session.commit()
+    return jsonify(status=200)
 
 
 

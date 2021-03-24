@@ -45,10 +45,10 @@ class Reservation(db.Model):
     upper_altitude = db.Column(db.String(10))
     altitude_unit = db.Column(db.String(4))
     remarks = db.Column(db.String(20))
-    status_id = db.Column(db.Integer,db.ForeignKey('status.id'),nullable=False)
-    airspace_id = db.Column(db.Integer,db.ForeignKey('airspace.id'),nullable=False)
-    section_id = db.Column(db.Integer,db.ForeignKey('section.id'),nullable=False)
-    unit_id = db.Column(db.Integer,db.ForeignKey('unit.id'),nullable=False)
+    status_id = db.Column(db.Integer,db.ForeignKey('status.id'))
+    airspace_id = db.Column(db.Integer,db.ForeignKey('airspace.id'))
+    section_id = db.Column(db.Integer,db.ForeignKey('section.id'))
+    unit_id = db.Column(db.Integer,db.ForeignKey('unit.id'))
     
     def __repr__(self):
         return '<Reservation %r>' % self.id
