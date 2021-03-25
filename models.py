@@ -6,8 +6,8 @@ from sqlalchemy.sql import func
 
 class Airspace(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    designator = db.Column(db.String(30),unique=True)
-    typ = db.Column(db.String(10))
+    designator = db.Column(db.String(10))
+    typ = db.Column(db.String(6))
     reservations = db.relationship('Reservation',backref='airspace',lazy=True)
 
     def __repr__(self):
@@ -15,7 +15,7 @@ class Airspace(db.Model):
 
 class Section(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    name = db.Column(db.String(30),unique=True)
+    name = db.Column(db.String(10),unique=True)
     reservations = db.relationship('Reservation',backref='section',lazy=True)
 
     def __repr__(self):
@@ -23,7 +23,7 @@ class Section(db.Model):
 
 class Unit(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    name = db.Column(db.String(30),unique=True)
+    name = db.Column(db.String(10),unique=True)
     reservations = db.relationship('Reservation',backref='unit',lazy=True)
 
     def __repr__(self):
@@ -31,7 +31,7 @@ class Unit(db.Model):
 
 class Status(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    name = db.Column(db.String(20))
+    name = db.Column(db.String(10))
     reservations = db.relationship('Reservation',backref='status',lazy=True)
 
     def __repr__(self):
