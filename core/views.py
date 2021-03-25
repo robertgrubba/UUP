@@ -2,13 +2,13 @@ from flask import Blueprint, render_template, jsonify
 import requests,json 
 from sqlalchemy import extract
 from models import *
-from datetime import datetime
+import datetime
 
 core_bp = Blueprint('core_bp',__name__,template_folder='templates')
 
 @core_bp.context_processor
 def inject_now():
-        return {'now': datetime.utcnow()}
+        return {'now': datetime.datetime.utcnow()}
 
 @core_bp.route('/')
 def index():

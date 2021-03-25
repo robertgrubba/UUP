@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   </head>
 
-  <body>
+  <body class="d-flex flex-column h-100">
 
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
 	    <a class="navbar-brand" href="{{ url_for('core_bp.index') }}">UUP</a>
@@ -46,12 +46,19 @@
       </div>
     </nav>
 
-    <main role="main" class="container">
-	<div class="starter-template">
+    <main role="main" class="flex-shrink-0">
+	<div class="container">
 	{% block content %}
 	{% endblock %}
 	</div>
     </main>
+
+    <footer class="footer mt-auto py-3 bg-light">
+	      <div class="container">
+		      <span class="text-muted">Dane gromadzone na potrzeby paralotniarzy korzystających z <a href="https://leonardo.pgxc.pl">Polskiego Serwera LeonardoXC</a></span>
+		</div>
+    </footer>
+      <script src="https://getbootstrap.com/docs/5.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
   </body>
 </html>
 
