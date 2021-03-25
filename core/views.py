@@ -1,9 +1,14 @@
 from flask import Blueprint, render_template, jsonify
 import requests,json 
+from sqlalchemy import extract
 from models import *
-#from sqlalchemy import extract
+from datetime import datetime
 
 core_bp = Blueprint('core_bp',__name__,template_folder='templates')
+
+@core_bp.context_processor
+def inject_now():
+        return {'now': datetime.utcnow()}
 
 @core_bp.route('/')
 def index():
@@ -19,6 +24,16 @@ def echo():
 def html():
     r = json.loads(requests.get('https://airspace.pansa.pl/map-configuration/uup').text)
     return render_template('core/uup.html',uup=r)
+
+@core_bp.route('/<int:year>/<int:month>/<int:day>/')
+def day_display(year,month,day):
+    reservations = Reservation.query.filter(extract('year',Reservation.start)==year,extract('month',Reservation.start)==month, extract('day',Reservation.start)==day,Reservation.status.has(Status.name=="ACTIVATED")).all()
+    other= Reservation.query.filter(extract('year',Reservation.start)==year,extract('month',Reservation.start)==month, extract('day',Reservation.start)==day, Reservation.status.has(Status.name!="ACTIVATED")).all()
+    if (reservations or other):
+        return render_template('core/reservations.html',reservations=reservations, other=other)
+    else:
+        return render_template('index.html')
+
 
 @core_bp.route('/update/')
 def update():
@@ -90,10 +105,10 @@ def update():
                             new_status = Status(name=reservation['reservationStatus'])
                             db.session.add(new_status)
                             status_q = new_status
-
-                        reservation_q.status=status_q
-                        db.session.commit()
-                        updated = updated+1
+                        if reservation_q.status != status_q:
+                            reservation_q.status = status_q
+                            db.session.commit()
+                            updated = updated+1
         processed = processed+1
     return jsonify(status=200,updated=updated,processed=processed)
 
