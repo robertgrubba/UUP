@@ -27,10 +27,12 @@ def html():
 
 @core_bp.route('/<int:year>/<int:month>/<int:day>/')
 def day_display(year,month,day):
+    yesterday = datetime.date.today() - datetime.timedelta(days=1)
+    yesterday_reservations = Reservation.query.filter(extract('year',Reservation.start)==yesterday.year,extract('month',Reservation.start)==yesterday.month, extract('day',Reservation.start)==yesterday.day, extract('day',Reservation.end)==day).all()
     reservations = Reservation.query.filter(extract('year',Reservation.start)==year,extract('month',Reservation.start)==month, extract('day',Reservation.start)==day,Reservation.status.has(Status.name=="ACTIVATED")).all()
     other= Reservation.query.filter(extract('year',Reservation.start)==year,extract('month',Reservation.start)==month, extract('day',Reservation.start)==day, Reservation.status.has(Status.name!="ACTIVATED")).all()
     if (reservations or other):
-        return render_template('core/reservations.html',reservations=reservations, other=other)
+        return render_template('core/reservations.html',reservations=reservations, other=other, yesterday=yesterday_reservations)
     else:
         return render_template('index.html')
 
