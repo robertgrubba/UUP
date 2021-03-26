@@ -105,6 +105,11 @@ def update():
                             status_q = new_status
                         if reservation_q.status != status_q:
                             reservation_q.status = status_q
+                            reservation_q.start=start
+                            reservation_q.end=end
+                            reservation_q.lower_altitude=reservation['lowerAltitude']
+                            reservation_q.upper_altitude=reservation['upperAltitude']
+                            reservation_q.remarks=remarks
                             db.session.commit()
                             updated = updated+1
         processed = processed+1
