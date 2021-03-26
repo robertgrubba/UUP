@@ -1,21 +1,23 @@
 {% extends 'core/base.html' %}
 {% block content %}
-<h1>Stan stref powietrznych na dzień {{ reservations[0].start.year }}-{{ reservations[0].start.month }}-{{ reservations[0].start.day }}</h1>
-<h2>Strefy rezerwowane w dniu poprzednim, których rezerwacja kończy się w dniu {{ reservations[0].start.year }}-{{ reservations[0].start.month }}-{{ reservations[0].start.day }}*</h2>
+<h1>Stan stref powietrznych na dzień {{ year }}-{{ month }}-{{ day }}</h1>
+
+<h2>Strefy rezerwowane w dniu poprzednim, których rezerwacja kończy się w dniu {{ year }}-{{ month }}-{{ day }}*</h2>
 <table class="table table-striped">
 	<tr><th scope="col">Typ</th><th scope="col">Desygnator</th><th scope="col">Okres rezerwacji</th><th scope="col">Zakres wysokości</th><th scope="col">Uwagi</th><th scope="col">Status</th></tr>
-{% for r in yesterday_reservations %}
+{% for r in yesterday %}
 	<tr><td>{{ r.airspace.typ }}</td><td>{{ r.airspace.designator }}</td><td>{{ r.start }}Z - {{ r.end }}Z </td><td>{{r.lower_altitude }}-{{ r.upper_altitude }}{{ r.altitude_unit }}</td><td>{{ r.remarks }}</td><td>{{ r.status.name }}</td></tr>
 {% endfor %}
 </table>
 
-<h2>Strefy aktywowane {{ reservations[0].start.year }}-{{ reservations[0].start.month }}-{{ reservations[0].start.day }}*</h2>
+<h2>Strefy aktywowane {{ year }}-{{ month }}-{{ day }}*</h2>
 <table class="table table-striped">
 	<tr><th scope="col">Typ</th><th scope="col">Desygnator</th><th scope="col">Okres rezerwacji</th><th scope="col">Zakres wysokości</th><th scope="col">Uwagi</th><th scope="col">Status</th></tr>
 {% for r in reservations %}
 	<tr><td>{{ r.airspace.typ }}</td><td>{{ r.airspace.designator }}</td><td>{{ r.start }}Z - {{ r.end }}Z </td><td>{{r.lower_altitude }}-{{ r.upper_altitude }}{{ r.altitude_unit }}</td><td>{{ r.remarks }}</td><td>{{ r.status.name }}</td></tr>
 {% endfor %}
 </table>
+
 <h2>Strefy zarezerwowane, bez potwierdzenia aktywacji*</h2>
 <table class="table table-striped" > 
 	<tr><th scope="col">Typ</th><th cope="col">Desygnator</th><th scope="col">Okres rezerwacji</th><th scope="col">Zakres wysokości</th><th scope="col">Uwagi</th><th scope="col">Status</th></tr>
