@@ -16,16 +16,6 @@ def index():
     return render_template('core/index.html',days=days)
 
 
-@core_bp.route('/echo/')
-def echo():
-    r = requests.get('https://airspace.pansa.pl/map-configuration/uup').text
-    return jsonify(r)
-
-@core_bp.route('/html/')
-def html():
-    r = json.loads(requests.get('https://airspace.pansa.pl/map-configuration/uup').text)
-    return render_template('core/uup.html',uup=r)
-
 @core_bp.route('/today/')
 def today():
     today = datetime.date.today()
