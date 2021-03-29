@@ -13,3 +13,6 @@ migrate = Migrate(app,db)
 
 from core.views import core_bp
 app.register_blueprint(core_bp)
+
+from api.views import api_bp
+app.register_blueprint(api_bp, url_prefix='/api')
