@@ -10,17 +10,27 @@
 	 <li>przygotowałem podstawy szablonu, który za jakiś czas zostanie dostosowany do aplikacji,</li>
 	 <li>gromadzone są dane z UUP, aktualizacje lokalnej bazy danych robione są w interwale 30 minutowym,</li>
  	 <li>można wyświetlać dane z wewnętrznej bazy danych,</li>
+	 <li>przygotowane menu pozwalające wybrać archiwalną datę z podziałem na miesiące,</li>
  </ul>
  TODO:
  <ul>
 	 <li>integracja z wewnętrznymi mechanizmami <a href="https://leonardo.pgxc.pl">leonardo.pgxc.pl</a>,</li>
-	 <li>ładne menu pozwalające wybrać archiwalną datę,</li>
 	 <li>przygotować mechanizmy archiwizujące punkty graniczne stref publikowanych w UUP/AUP</li>
  </ul>
  <h2>Zarchiwizowane zapisy UUP</h2>
  <ul>
- {% for day in days %}
- 	<li><a href="{{ url_for('core_bp.day_display',year=day.start.year,month=day.start.month,day=day.start.day) }}">{{ day.start.year }}/{{ day.start.month }}/{{ day.start.day }}</a></li>
+ {% for year,year_group in days |groupby('start.year')|reverse %}
+ 	{% for month, list in year_group|groupby('start.month')|reverse %}
+	<div class="dropdown"> 
+		<button class="btn btn-secondary dropdown-toggle" type="button" id="{{year}}_{{month}}Primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ year }} / {{ month }}</button>
+		<div class="dropdown-menu" aria-labelledby="{{year}}_{{month}}Primary">
+		{% for day in list %}
+ 			<a class="dropdown-item" href="{{ url_for('core_bp.day_display',year=day.start.year,month=day.start.month,day=day.start.day) }}">{{ day.start.year }}/{{ day.start.month }}/{{ day.start.day }}</a>
+		{% endfor %}
+		</div>
+	</div>
+	<br>
+	{% endfor %}
  {% endfor %}
  </ul>
 </p>
