@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, jsonify
 import requests,json 
-from sqlalchemy import extract
+from sqlalchemy import extract,asc
 from models import *
 import datetime
 
@@ -12,7 +12,7 @@ def inject_now():
 
 @core_bp.route('/')
 def index():
-    days = Reservation.query.group_by(extract('year',Reservation.start), extract('month',Reservation.start), extract('day',Reservation.start)).all()
+    days = Reservation.query.group_by(extract('year',Reservation.start), extract('month',Reservation.start), extract('day',Reservation.start)).order_by(Reservation.start.desc()).all()
     return render_template('core/index.html',days=days)
 
 
@@ -24,9 +24,9 @@ def today():
 @core_bp.route('/<int:year>/<int:month>/<int:day>/')
 def day_display(year,month,day):
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
-    previous_reservations = Reservation.query.filter(extract('year',Reservation.start)==yesterday.year,extract('month',Reservation.start)==yesterday.month, extract('day',Reservation.start)==yesterday.day, extract('day',Reservation.end)==datetime.date(year=year,month=month,day=day).day).all()
-    active = Reservation.query.filter(extract('year',Reservation.start)==year,extract('month',Reservation.start)==month, extract('day',Reservation.start)==day,Reservation.status.has(Status.name=="ACTIVATED")).all()
-    other= Reservation.query.filter(extract('year',Reservation.start)==year,extract('month',Reservation.start)==month, extract('day',Reservation.start)==day, Reservation.status.has(Status.name!="ACTIVATED")).all()
+    previous_reservations = Reservation.query.join(Airspace).filter(extract('year',Reservation.start)==yesterday.year,extract('month',Reservation.start)==yesterday.month, extract('day',Reservation.start)==yesterday.day, extract('day',Reservation.end)==datetime.date(year=year,month=month,day=day).day).order_by(asc(Airspace.designator)).all()
+    active = Reservation.query.join(Airspace).filter(extract('year',Reservation.start)==year,extract('month',Reservation.start)==month, extract('day',Reservation.start)==day,Reservation.status.has(Status.name=="ACTIVATED")).order_by(asc(Airspace.designator)).all()
+    other= Reservation.query.join(Airspace).filter(extract('year',Reservation.start)==year,extract('month',Reservation.start)==month, extract('day',Reservation.start)==day, Reservation.status.has(Status.name!="ACTIVATED")).order_by(asc(Airspace.designator)).all()
     if (yesterday or active or other):
         return render_template('core/reservations.html',reservations=active, other=other, yesterday=previous_reservations,year=year,month=month,day=day)
     else:
