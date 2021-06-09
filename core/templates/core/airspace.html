@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+{% block title %}
+Historia rezerwacji strefy {{ name }}
+{% endblock %}
+{% block content %}
+<h1>Historyczne rezerwacje strefy powietrznej {{ name }}</h1>
+{% if (reservations is defined) and reservations %}
+<table class="table table-striped">
+	<tr><th scope="col">Typ</th><th scope="col">Desygnator</th><th scope="col">Okres rezerwacji</th><th scope="col">Zakres wysokości</th><th scope="col">Uwagi</th><th scope="col">Status</th></tr>
+{% for r in reservations %}
+	<tr><td>{{ r.airspace.typ }}</td><td>{{ r.airspace.designator }}</td><td>{{ r.start }}Z - {{ r.end }}Z </td><td>{{r.lower_altitude }}-{{ r.upper_altitude }}{{ r.altitude_unit }}</td><td>{{ r.remarks }}</td><td>{{ r.status.name }}</td></tr>
+{% endfor %}
+</table>
+<p><small>*Źródło UUP publikowany przez PANSA, lokalne dane aktualizowane co 30 minut <br>*Przed rozpoczęciem lotów zawsze potwierdź zajętość stref w FIS
+<ul>
+	<li>UAV/BSP - UNMANNED AERIAL VEHICLE/BEZZALOGOWY STATEK POWIETRZNY</li>
+	<li>RPA - REMOTELY PILOTED AIRCRAFT/ZDALNIE STEROWANE BEZZALOGOWE STATKI POWIETRZNE</li>
+	<li>/W - W PRZYPADKU KONFLIKTU ZE STRUKTURA Z PRZYZNANYM PRIORYTETEM ZEZWOLENIE JEST WYDAWANE WARUNKOWO /W - CONDITIONAL PERMISSION IN CASE OF A CONFLICT WITH AN AREA HAVING A PRIORITY</li>
+	<li>CLN - STREFA KOLIZYJNA - PATRZ AIP ENR 2.2.2-2 PUNKT 4 / CONFLICT AREA - SEE AIP ENR 2.2.2-2 POINT 4</li>
+</ul>
+</small>
+</p>
+{% else %}
+Brak danych
+{% endif %}
+{% endblock %}
+

@@ -9,7 +9,7 @@
 <table class="table table-striped">
 	<tr><th scope="col">Typ</th><th scope="col">Desygnator</th><th scope="col">Okres rezerwacji</th><th scope="col">Zakres wysokości</th><th scope="col">Uwagi</th><th scope="col">Status</th></tr>
 {% for r in yesterday %}
-	<tr><td>{{ r.airspace.typ }}</td><td>{{ r.airspace.designator }}</td><td>{{ r.start }}Z - {{ r.end }}Z </td><td>{{r.lower_altitude }}-{{ r.upper_altitude }}{{ r.altitude_unit }}</td><td>{{ r.remarks }}</td><td>{{ r.status.name }}</td></tr>
+<tr><td>{{ r.airspace.typ }}</td><td><a href="{{ url_for('core_bp.airspace_reservations',name=r.airspace.designator) }}">{{ r.airspace.designator }}</a></td><td>{{ r.start }}Z - {{ r.end }}Z </td><td>{{r.lower_altitude }}-{{ r.upper_altitude }}{{ r.altitude_unit }}</td><td>{{ r.remarks }}</td><td>{{ r.status.name }}</td></tr>
 {% endfor %}
 </table>
 {% endif %}
@@ -19,7 +19,7 @@
 <table class="table table-striped">
 	<tr><th scope="col">Typ</th><th scope="col">Desygnator</th><th scope="col">Okres rezerwacji</th><th scope="col">Zakres wysokości</th><th scope="col">Uwagi</th><th scope="col">Status</th></tr>
 {% for r in reservations %}
-	<tr><td>{{ r.airspace.typ }}</td><td>{{ r.airspace.designator }}</td><td>{{ r.start }}Z - {{ r.end }}Z </td><td>{{r.lower_altitude }}-{{ r.upper_altitude }}{{ r.altitude_unit }}</td><td>{{ r.remarks }}</td><td>{{ r.status.name }}</td></tr>
+<tr><td>{{ r.airspace.typ }}</td><td><a href="{{ url_for('core_bp.airspace_reservations',name=r.airspace.designator) }}">{{ r.airspace.designator }}</a></td><td>{{ r.start }}Z - {{ r.end }}Z </td><td>{{r.lower_altitude }}-{{ r.upper_altitude }}{{ r.altitude_unit }}</td><td>{{ r.remarks }}</td><td>{{ r.status.name }}</td></tr>
 {% endfor %}
 </table>
 {% endif %}
@@ -29,7 +29,7 @@
 <table class="table table-striped" > 
 	<tr><th scope="col">Typ</th><th cope="col">Desygnator</th><th scope="col">Okres rezerwacji</th><th scope="col">Zakres wysokości</th><th scope="col">Uwagi</th><th scope="col">Status</th></tr>
 {% for r in other %}
-	<tr><td>{{ r.airspace.typ }}</td><td>{{ r.airspace.designator }}</td><td>{{ r.start }}Z - {{ r.end }}Z </td><td>{{r.lower_altitude }}-{{ r.upper_altitude }}{{ r.altitude_unit }}</td><td>{{ r.remarks }}</td><td>{{ r.status.name }}</td></tr>
+<tr><td>{{ r.airspace.typ }}</td><td><a href="{{ url_for('core_bp.airspace_reservations',name=r.airspace.designator) }}">{{ r.airspace.designator }}</a></td><td>{{ r.start }}Z - {{ r.end }}Z </td><td>{{r.lower_altitude }}-{{ r.upper_altitude }}{{ r.altitude_unit }}</td><td>{{ r.remarks }}</td><td>{{ r.status.name }}</td></tr>
 {% endfor %}
 </table>
 {% endif %}

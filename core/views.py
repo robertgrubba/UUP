@@ -32,4 +32,8 @@ def day_display(year,month,day):
     else:
         return index()
 
+@core_bp.route('/airspace/<string:name>/')
+def airspace_reservations(name):
+        reservations = Reservation.query.join(Airspace).filter(Airspace.designator==name).order_by(Reservation.start.desc()).all()
+        return render_template('core/airspace.html',reservations=reservations,name=name)
 
