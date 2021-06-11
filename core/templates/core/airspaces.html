@@ -1,0 +1,17 @@
+{% extends 'core/base.html' %}
+{% block title %}
+Lista zarchiwizowanych stref powietrznych
+{% endblock %}
+{% block content %}
+<h1>Lista zarchiwizowanych stref powietrznych</h1>
+{% if (airspaces is defined) and airspaces %}
+<div class="row">
+{% for a in airspaces %}
+<div class="col-md-1 m-2"><a href="{{ url_for('core_bp.airspace_reservations',name=a.designator) }}"><button type="button" class="btn btn-outline-info">{{ a.designator }}</button></a></div>
+{% endfor %}
+</div>
+{% else %}
+Brak danych
+{% endif %}
+{% endblock %}
+

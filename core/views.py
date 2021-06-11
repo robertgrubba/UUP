@@ -39,3 +39,8 @@ def airspace_reservations(name,page=1):
         reservations = Reservation.query.join(Airspace).filter(Airspace.designator==name).order_by(Reservation.start.desc()).paginate(page,per_page,error_out=False)
         return render_template('core/airspace.html',reservations=reservations,name=name)
 
+@core_bp.route('/airspaces/')
+def airspaces():
+    airspaces = Airspace.query.group_by(Airspace.typ,Airspace.designator).all()
+    return render_template('core/airspaces.html',airspaces=airspaces)
+
