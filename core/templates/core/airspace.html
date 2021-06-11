@@ -7,10 +7,19 @@ Historia rezerwacji strefy {{ name }}
 {% if (reservations is defined) and reservations %}
 <table class="table table-striped">
 	<tr><th scope="col">Typ</th><th scope="col">Desygnator</th><th scope="col">Okres rezerwacji</th><th scope="col">Zakres wysokości</th><th scope="col">Uwagi</th><th scope="col">Status</th></tr>
-{% for r in reservations %}
+{% for r in reservations.items %}
 	<tr><td>{{ r.airspace.typ }}</td><td>{{ r.airspace.designator }}</td><td>{{ r.start }}Z - {{ r.end }}Z </td><td>{{r.lower_altitude }}-{{ r.upper_altitude }}{{ r.altitude_unit }}</td><td>{{ r.remarks }}</td><td>{{ r.status.name }}</td></tr>
 {% endfor %}
 </table>
+	<nav aria-label="Nawigacja strony">
+		<ul class="pagination justify-content-center">
+			{% if reservations.has_prev %} <li class="page-item"><a class="page-link" href="{{ url_for('core_bp.airspace_reservations',page=reservations.prev_num,name=name) }}" ><span class="meta-nav">&larr;</span> Nowsze dane</a></li> {% else %}
+				<li class="page-item disabled"><a class="page-link" href="#" ><span class="meta-nav">&larr;</span> Nowsze dane</a></li> {% endif %}
+			<li class="page-item disabled"> <a class="page-link" href="#" ><span class="meta-nav">...</span></a> </li>
+			{% if reservations.has_next %} <li class="page-item"> <a class="page-link" href="{{ url_for('core_bp.airspace_reservations',page=reservations.next_num,name=name) }}" >Starsze dane <span class="meta-nav">&rarr;</span></a> </li> {% else %}
+			<li class="page-item disabled"> <a class="page-link" href="#" >Starsze dane <span class="meta-nav">&rarr;</span></a> </li> {% endif %}
+		</ul>
+	</nav>
 <p><small>*Źródło UUP publikowany przez PANSA, lokalne dane aktualizowane co 30 minut <br>*Przed rozpoczęciem lotów zawsze potwierdź zajętość stref w FIS
 <ul>
 	<li>UAV/BSP - UNMANNED AERIAL VEHICLE/BEZZALOGOWY STATEK POWIETRZNY</li>
