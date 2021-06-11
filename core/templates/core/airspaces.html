@@ -4,12 +4,15 @@ Lista zarchiwizowanych stref powietrznych
 {% endblock %}
 {% block content %}
 <h1>Lista zarchiwizowanych stref powietrznych</h1>
-{% if (airspaces is defined) and airspaces %}
+{% if (spaces is defined) and spaces %}
+{% for s in spaces %}
+<h2>{{ s }}</h2>
 <div class="row">
-{% for a in airspaces %}
-<div class="col-md-1 m-2"><a href="{{ url_for('core_bp.airspace_reservations',name=a.designator) }}"><button type="button" class="btn btn-outline-info">{{ a.designator }}</button></a></div>
-{% endfor %}
+	{% for designator in spaces[s] %}
+	<div class="col-md-1 m-2"><a href="{{ url_for('core_bp.airspace_reservations',name=designator) }}"><button type="button" class="btn btn-outline-info">{{ designator }}</button></a></div>
+	{% endfor %}
 </div>
+{% endfor %}
 {% else %}
 Brak danych
 {% endif %}

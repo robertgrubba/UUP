@@ -42,5 +42,8 @@ def airspace_reservations(name,page=1):
 @core_bp.route('/airspaces/')
 def airspaces():
     airspaces = Airspace.query.group_by(Airspace.typ,Airspace.designator).all()
-    return render_template('core/airspaces.html',airspaces=airspaces)
+    spaces = {} 
+    for airspace in airspaces:
+        spaces.setdefault(airspace.typ, []).append(airspace.designator)
+    return render_template('core/airspaces.html',spaces=spaces)
 
