@@ -40,8 +40,16 @@ def day_display(year,month,day):
                 planned=p
                 )
     else:
-        return jsonify(status=404)
+        return jsonify(status=204)
+ 
 
+@api_bp.route('/airspace/<string:name>/')
+def airspace_exists(name):
+    airspace = Airspace.query.filter(Airspace.designator.ilike("%"+name+"%")).first()
+    if airspace:
+        return jsonify(status=200)
+    else:
+        return jsonify(status=404)
 
 @api_bp.route('/update/')
 def update():
