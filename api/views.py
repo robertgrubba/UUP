@@ -130,6 +130,21 @@ def update():
                             reservation_q.remarks=remarks
                             db.session.commit()
                             updated = updated+1
+
+        if r['geometry']:
+            airspace_q = Airspace.query.filter_by(designator=r['properties']['designator'],typ=r['properties']['airspaceElementType']).first()
+            for point in r['geometry']['coordinates'][0]:
+                lat = point[1]
+                lon = point[0]
+                coordinate = Coordinate.query.filter_by(lat=lat,lon=lon).first()
+                if not coordinate:
+                    new_coordinate = Coordinate(lat=lat,lon=lon)
+                    db.session.add(new_coordinate)
+                    airspace_q.coordinates.append(new_coordinate)
+                else:
+                    airspace_q.coordinates.append(coordinate)
+                db.session.commit()
+
         processed = processed+1
     return jsonify(status=200,updated=updated,processed=processed)
 

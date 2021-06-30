@@ -3,15 +3,25 @@ from app import db
 from sqlalchemy.sql import func
 
 #db=SQLAlchemy()
+coordinates = db.Table('coordinates', db.Column('airspace_id', db.Integer, db.ForeignKey('airspace.id'), primary_key=True), db.Column('coordinate_id', db.Integer, db.ForeignKey('coordinate.id'), primary_key=True))
 
 class Airspace(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     designator = db.Column(db.String(10))
     typ = db.Column(db.String(6))
     reservations = db.relationship('Reservation',backref='airspace',lazy=True)
+    coordinates = db.relationship('Coordinate', secondary=coordinates, lazy='subquery', backref=db.backref('airspace', lazy=True))
 
     def __repr__(self):
         return '<Airspace %r>' % self.id
+
+class Coordinate(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    lat = db.Column(db.Float)
+    lon = db.Column(db.Float)
+
+    def __repr__(self):
+        return '<Coordinate: %r>' %self.id
 
 class Section(db.Model):
     id = db.Column(db.Integer,primary_key=True)
