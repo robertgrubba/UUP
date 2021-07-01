@@ -9,29 +9,26 @@ Historia rezerwacji strefy {{ name }}
 <script src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initMap&libraries=&v=weekly" async></script>
 
 	<script>
-		// This example creates a simple polygon representing the Bermuda Triangle.
 		function initMap() {
 			  const map = new google.maps.Map(document.getElementById("map"), {
 				      zoom: 8,
 				  center: { lat: {{ airspace.coordinates[0].lat }}, lng: {{ airspace.coordinates[0].lon }} },
 				      mapTypeId: "terrain",
 				    });
-			  // Define the LatLng coordinates for the polygon's path.
-			  const triangleCoords = [
+			  const airspaceCoords = [
 				  	{% for c in airspace.coordinates %}
 				  		{ lat: {{ c.lat }}, lng: {{ c.lon }} },
 				  	{% endfor %}
 				    ];
-			  // Construct the polygon.
-			  const bermudaTriangle = new google.maps.Polygon({
-				      paths: triangleCoords,
+			  const airspace = new google.maps.Polygon({
+				      paths: airspaceCoords,
 				      strokeColor: "#FF0000",
 				      strokeOpacity: 0.8,
 				      strokeWeight: 2,
 				      fillColor: "#FF0000",
 				      fillOpacity: 0.35,
 				    });
-			  bermudaTriangle.setMap(map);
+			  airspace.setMap(map);
 		}
 	</script>
 {% endif %}
