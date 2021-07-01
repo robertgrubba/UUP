@@ -2,8 +2,45 @@
 {% block title %}
 Historia rezerwacji strefy {{ name }}
 {% endblock %}
+{% block map %}
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+{% if (airspace.coordinates is defined) and airspace.coordinates[0] %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initMap&libraries=&v=weekly" async></script>
+
+	<script>
+		// This example creates a simple polygon representing the Bermuda Triangle.
+		function initMap() {
+			  const map = new google.maps.Map(document.getElementById("map"), {
+				      zoom: 8,
+				  center: { lat: {{ airspace.coordinates[0].lat }}, lng: {{ airspace.coordinates[0].lon }} },
+				      mapTypeId: "terrain",
+				    });
+			  // Define the LatLng coordinates for the polygon's path.
+			  const triangleCoords = [
+				  	{% for c in airspace.coordinates %}
+				  		{ lat: {{ c.lat }}, lng: {{ c.lon }} },
+				  	{% endfor %}
+				    ];
+			  // Construct the polygon.
+			  const bermudaTriangle = new google.maps.Polygon({
+				      paths: triangleCoords,
+				      strokeColor: "#FF0000",
+				      strokeOpacity: 0.8,
+				      strokeWeight: 2,
+				      fillColor: "#FF0000",
+				      fillOpacity: 0.35,
+				    });
+			  bermudaTriangle.setMap(map);
+		}
+	</script>
+{% endif %}
+
+{% endblock %}
 {% block content %}
 <h1>Historyczne rezerwacje strefy powietrznej {{ name }}</h1>
+
+<div id="map" style="position:static !important;"></div>
 {% if (reservations is defined) and reservations %}
 <table class="table table-striped">
 	<tr><th scope="col">Typ</th><th scope="col">Desygnator</th><th scope="col">Okres rezerwacji</th><th scope="col">Zakres wysokości</th><th scope="col">Uwagi</th><th scope="col">Status</th></tr>

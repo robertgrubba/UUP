@@ -1,3 +1,4 @@
+import os
 from flask import Blueprint, render_template, jsonify
 import requests,json 
 from sqlalchemy import extract,asc
@@ -37,7 +38,9 @@ def day_display(year,month,day):
 def airspace_reservations(name,page=1):
         per_page=50
         reservations = Reservation.query.join(Airspace).filter(Airspace.designator==name).order_by(Reservation.start.desc()).paginate(page,per_page,error_out=False)
-        return render_template('core/airspace.html',reservations=reservations,name=name)
+        airspace = Airspace.query.filter(Airspace.designator==name).first()
+        key = os.environ.get('GOOGLEMAPSAPIKEY')
+        return render_template('core/airspace.html',reservations=reservations,name=name,airspace=airspace,key=key)
 
 @core_bp.route('/airspaces/')
 def airspaces():
