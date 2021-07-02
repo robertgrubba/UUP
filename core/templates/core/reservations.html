@@ -2,8 +2,96 @@
 {% block title %}
 {{ year }}-{{ month }}-{{ day }}
 {% endblock %}
+
+{% block map %}
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initMap&libraries=&v=weekly" async></script>
+
+	<script>
+	function initMap() {
+		  const map = new google.maps.Map(document.getElementById("map"), {
+			      zoom: 5,
+			  center: { lat: 52.0692, lng: 19.4773 },
+			      mapTypeId: "terrain",
+			    });
+		  {% for r in yesterday %}
+			const y{{ r.id }}Coords = [
+				{% for c in r.airspace.coordinates %}
+					{ lat: {{ c.lat }}, lng: {{ c.lon }} },
+				{% endfor %}
+			    ];
+			const y{{ r.id }} = new google.maps.Polygon({
+			    paths: y{{ r.id }}Coords,
+				{% if r.status.name == "ACTIVATED" %}
+			      		strokeColor: "#FF0000",
+			      		fillColor: "#FF0000",
+				{% else %}
+			      		strokeColor: "#FFFF00",
+			      		fillColor: "#FFFF00",
+				{% endif %}
+			      strokeOpacity: 0.8,
+			      strokeWeight: 2,
+			      fillOpacity: 0.35,
+			    });
+			y{{ r.id }}.setMap(map);
+		  {% endfor %}
+		  {% for r in reservations %}
+			const r{{ r.id }}Coords = [
+				{% for c in r.airspace.coordinates %}
+					{ lat: {{ c.lat }}, lng: {{ c.lon }} },
+				{% endfor %}
+			    ];
+			const r{{ r.id }} = new google.maps.Polygon({
+			    paths: r{{ r.id }}Coords,
+				{% if r.status.name == "ACTIVATED" %}
+			      		strokeColor: "#FF0000",
+			      		fillColor: "#FF0000",
+				{% else %}
+			      		strokeColor: "#FFFF00",
+			      		fillColor: "#FFFF00",
+				{% endif %}
+			      strokeOpacity: 0.8,
+			      strokeWeight: 2,
+			      fillOpacity: 0.35,
+			    });
+			r{{ r.id }}.setMap(map);
+		  {% endfor %}
+		  {% for r in other %}
+			const o{{ r.id }}Coords = [
+				{% for c in r.airspace.coordinates %}
+					{ lat: {{ c.lat }}, lng: {{ c.lon }} },
+				{% endfor %}
+			    ];
+			const o{{ r.id }} = new google.maps.Polygon({
+			    paths: o{{ r.id }}Coords,
+				{% if r.status.name == "ACTIVATED" %}
+			      		strokeColor: "#FF0000",
+			      		fillColor: "#FF0000",
+				{% else %}
+			      		strokeColor: "#FFFF00",
+			      		fillColor: "#FFFF00",
+				{% endif %}
+			      strokeOpacity: 0.8,
+			      strokeWeight: 2,
+			      fillOpacity: 0.35,
+			    });
+			o{{ r.id }}.setMap(map);
+		  {% endfor %}
+	}
+
+	</script>
+<style>
+#map{
+	width: 100%;
+	height: 300px;
+}
+</style>
+
+{% endblock %}
 {% block content %}
 <h1>Stan stref powietrznych na dzień {{ year }}-{{ month }}-{{ day }}</h1>
+<div id="map" class="container"></div>
 {% if (yesterday is defined) and yesterday %}
 <h2>Strefy rezerwowane w dniu poprzednim, których rezerwacja kończy się w dniu {{ year }}-{{ month }}-{{ day }}*</h2>
 <table class="table table-striped">

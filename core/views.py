@@ -28,8 +28,9 @@ def day_display(year,month,day):
     previous_reservations = Reservation.query.join(Airspace).filter(extract('year',Reservation.start)==yesterday.year,extract('month',Reservation.start)==yesterday.month, extract('day',Reservation.start)==yesterday.day, extract('day',Reservation.end)==datetime.date(year=year,month=month,day=day).day).order_by(asc(Airspace.designator)).all()
     active = Reservation.query.join(Airspace).filter(extract('year',Reservation.start)==year,extract('month',Reservation.start)==month, extract('day',Reservation.start)==day,Reservation.status.has(Status.name=="ACTIVATED")).order_by(asc(Airspace.designator)).all()
     other= Reservation.query.join(Airspace).filter(extract('year',Reservation.start)==year,extract('month',Reservation.start)==month, extract('day',Reservation.start)==day, Reservation.status.has(Status.name!="ACTIVATED")).order_by(asc(Airspace.designator)).all()
+    key = os.environ.get('GOOGLEMAPSAPIKEY')
     if (yesterday or active or other):
-        return render_template('core/reservations.html',reservations=active, other=other, yesterday=previous_reservations,year=year,month=month,day=day)
+        return render_template('core/reservations.html',reservations=active, other=other, yesterday=previous_reservations,year=year,month=month,day=day,key=key)
     else:
         return index()
 
