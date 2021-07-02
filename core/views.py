@@ -43,7 +43,7 @@ def airspace_reservations(name,page=1):
         reservations = Reservation.query.join(Airspace).filter(Airspace.designator==name).order_by(Reservation.start.desc()).paginate(page,per_page,error_out=False)
         airspace = Airspace.query.filter(Airspace.designator==name).first()
         key = os.environ.get('GOOGLEMAPSAPIKEY')
-        gfx = "./static/images/"+name+".png"
+        gfx = "./static/images/strefa_"+name+".png"
         http = urllib3.PoolManager()
         points = ""
         if (len(airspace.coordinates)>1 and not os.path.exists(gfx)):
@@ -64,7 +64,7 @@ def airspace_reservations(name,page=1):
 
             center_lat = (max_lat + min_lat) / 2
             center_lon = (max_lon + min_lon) / 2
-            url='http://maps.googleapis.com/maps/api/staticmap?key='+key+'&center='+str(center_lat)+','+str(center_lon)+'&zoom=9&size=600x600&maptype=satellite&sensor=false&path=color%3ared|weight:1|fill%3awhite'+points
+            url='http://maps.googleapis.com/maps/api/staticmap?key='+key+'&center='+str(center_lat)+','+str(center_lon)+'&zoom=10&size=600x600&maptype=terrain&sensor=false&path=color:red|weight:2|fillcolor:white'+points+"|"+str(airspace.coordinates[0].lat)+","+str(airspace.coordinates[0].lon)
 
             response = http.request('GET', url)
             f = open(gfx, 'wb')
