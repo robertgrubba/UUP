@@ -40,14 +40,15 @@ Historia rezerwacji strefy {{ name }}
 </style>
 {% endif %}
 
+{% endblock %}
+
+{% block ogmetadata %}
 
 <meta property="og:title" content="Strefa {{ name }}" />
 <meta property="og:description" content="Histora rezerwacji strefy  {{ name }} (na bazie UUP)" />
-<meta property="og:image" content="{{ url_for('static', filename='images/strefa_'+name+'.png') }}" />
+<meta property="og:image" content="http://uup.pgxc.pl{{ url_for('static', filename='images/strefa_'+name+'.png') }}" />
 <meta property="og:url" content="http://uup.pgxc.pl{{ url_for('core_bp.airspace_reservations', name=name)}}" />
-
 {% endblock %}
-
 
 {% block content %}
 <h1>Historyczne rezerwacje strefy powietrznej {{ name }}</h1>
