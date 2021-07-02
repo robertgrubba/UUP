@@ -4,6 +4,8 @@ import requests,json
 from sqlalchemy import extract,asc
 from models import *
 import datetime
+import urllib3
+from pprint import pprint
 
 core_bp = Blueprint('core_bp',__name__,template_folder='templates')
 
@@ -41,6 +43,34 @@ def airspace_reservations(name,page=1):
         reservations = Reservation.query.join(Airspace).filter(Airspace.designator==name).order_by(Reservation.start.desc()).paginate(page,per_page,error_out=False)
         airspace = Airspace.query.filter(Airspace.designator==name).first()
         key = os.environ.get('GOOGLEMAPSAPIKEY')
+        gfx = "./static/images/"+name+".png"
+        http = urllib3.PoolManager()
+        points = ""
+        if (len(airspace.coordinates)>1 and not os.path.exists(gfx)):
+            max_lat = airspace.coordinates[0].lat
+            max_lon = airspace.coordinates[0].lon
+            min_lat = airspace.coordinates[0].lat
+            min_lon = airspace.coordinates[0].lon
+            for point in airspace.coordinates:
+                if point.lat > max_lat:
+                    max_lat = point.lat
+                if point.lat < min_lat:
+                    min_lat = point.lat
+                if point.lon > max_lon:
+                    max_lon = point.lon
+                if point.lon < min_lon:
+                    min_lon = point.lon
+                points = points +"|"+str(point.lat)+','+str(point.lon)
+
+            center_lat = (max_lat + min_lat) / 2
+            center_lon = (max_lon + min_lon) / 2
+            url='http://maps.googleapis.com/maps/api/staticmap?key='+key+'&center='+str(center_lat)+','+str(center_lon)+'&zoom=9&size=600x600&maptype=satellite&sensor=false&path=color%3ared|weight:1|fill%3awhite'+points
+
+            response = http.request('GET', url)
+            f = open(gfx, 'wb')
+            f.write(response.data)
+            f.close()
+
         return render_template('core/airspace.html',reservations=reservations,name=name,airspace=airspace,key=key)
 
 @core_bp.route('/airspaces/')
