@@ -9,35 +9,42 @@ Historia rezerwacji strefy {{ name }}
 <script src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initMap&libraries=&v=weekly" async></script>
 
 	<script>
-		function initMap() {
-			  const map = new google.maps.Map(document.getElementById("map"), {
-				      zoom: 8,
-				  center: { lat: {{ airspace.coordinates[0].lat }}, lng: {{ airspace.coordinates[0].lon }} },
-				      mapTypeId: "terrain",
-				    });
-			  const airspaceCoords = [
-				  	{% for c in airspace.coordinates %}
-				  		{ lat: {{ c.lat }}, lng: {{ c.lon }} },
-				  	{% endfor %}
-				    ];
-			  const airspace = new google.maps.Polygon({
-				      paths: airspaceCoords,
-				      strokeColor: "#FF0000",
-				      strokeOpacity: 0.8,
-				      strokeWeight: 2,
-				      fillColor: "#FF0000",
-				      fillOpacity: 0.35,
-				    });
-			  airspace.setMap(map);
-		}
+	function initMap() {
+		  const map = new google.maps.Map(document.getElementById("map"), {
+			      zoom: 8,
+			  center: { lat: {{ airspace.coordinates[0].lat }}, lng: {{ airspace.coordinates[0].lon }} },
+			      mapTypeId: "terrain",
+			    });
+		  const airspaceCoords = [
+				{% for c in airspace.coordinates %}
+					{ lat: {{ c.lat }}, lng: {{ c.lon }} },
+				{% endfor %}
+			    ];
+		  const airspace = new google.maps.Polygon({
+			      paths: airspaceCoords,
+			      strokeColor: "#808080",
+			      strokeOpacity: 0.8,
+			      strokeWeight: 2,
+			      fillColor: "#808080",
+			      fillOpacity: 0.35,
+			    });
+		  airspace.setMap(map);
+	}
+
 	</script>
+<style>
+#map{
+	width: 100%;
+	height: 300px;
+}
+</style>
 {% endif %}
 
 {% endblock %}
 {% block content %}
 <h1>Historyczne rezerwacje strefy powietrznej {{ name }}</h1>
 
-<div id="map" style="position:static !important;"></div>
+<div id="map" class="container"></div>
 {% if (reservations is defined) and reservations %}
 <table class="table table-striped">
 	<tr><th scope="col">Typ</th><th scope="col">Desygnator</th><th scope="col">Okres rezerwacji</th><th scope="col">Zakres wysokości</th><th scope="col">Uwagi</th><th scope="col">Status</th></tr>
