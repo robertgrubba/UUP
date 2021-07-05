@@ -143,7 +143,8 @@ def update():
                         db.session.add(new_coordinate)
                         airspace_q.coordinates.append(new_coordinate)
                     else:
-                        airspace_q.coordinates.append(coordinate)
+                        if not Airspace.query.filter(Airspace.designator==r['properties']['designator'],Airspace.typ==r['properties']['airspaceElementType'],Airspace.coordinates.contains(coordinate)).first():
+                            airspace_q.coordinates.append(coordinate)
                     db.session.commit()
 
         processed = processed+1
