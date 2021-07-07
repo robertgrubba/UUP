@@ -52,8 +52,12 @@ def airspace_exists(name):
         return jsonify(status=404)
 
 @api_bp.route('/update/')
-def update():
-    response = json.loads(requests.get('https://airspace.pansa.pl/map-configuration/uup').text)
+@api_bp.route('/update/<string:mode>')
+def update(mode='uup'):
+    if mode=='aup':
+        response = json.loads(requests.get('https://airspace.pansa.pl/map-configuration/aup').text)
+    else:
+        response = json.loads(requests.get('https://airspace.pansa.pl/map-configuration/uup').text)
     updated = 0    
     processed = 0
     for r in response:
