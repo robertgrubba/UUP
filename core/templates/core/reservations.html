@@ -85,7 +85,11 @@
 #map{
 	width: 100%;
 	height: 300px;
+	{% if mapa == 1 %}
+	display: block;
+	{% else %}
 	display: none;
+	{% endif %}
 }
 </style>
 
